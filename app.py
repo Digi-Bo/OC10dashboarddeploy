@@ -15,8 +15,7 @@ user_id = st.number_input("Entrez l'ID de l'utilisateur :", min_value=1, max_val
 # Bouton pour lancer la recommandation
 if st.button("Recommander des articles"):
     # Adresse de la fonction Azure basée sur le contenu
-    azure_function_url = "https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code=Nz3pKOLCAk8mUhxJEbOFTyd33asChi2jiyg2u9i4TA-OAzFuWHXtBg=="
-    
+    azure_function_url = "https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code=G-0r5SMpX8yCs8aOKAd0bbGRrydUdCLYkH8M3OjkKuvNAzFuCqIoWw=="
     try:
         # Envoyer une requête GET à la fonction Azure
         response = requests.get(
