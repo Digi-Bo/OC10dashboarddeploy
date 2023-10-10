@@ -1,6 +1,9 @@
 
 import streamlit as st
 import requests  
+import os
+
+
 
 ##
 ## Ceci est une app de recommandation de contenu qui appelle une fonction Azure
@@ -14,8 +17,13 @@ user_id = st.number_input("Entrez l'ID de l'utilisateur :", min_value=1, max_val
 
 # Bouton pour lancer la recommandation
 if st.button("Recommander des articles"):
-    # Adresse de la fonction Azure basée sur le contenu avec le bon token
-    azure_function_url = "https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code=G-0r5SMpX8yCs8aOKAd0bbGRrydUdCLYkH8M3OjkKuvNAzFuCqIoWw=="
+    
+    # Récupération du token dans les secrêt
+    azure_function_token = os.environ.get("AZURE_FUNCTION_TOKEN")
+
+    # URL en ajoutant le token
+    azure_function_url = f"https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code={azure_function_token}"
+
     try:
         # Envoyer une requête GET à la fonction Azure
         response = requests.get(
