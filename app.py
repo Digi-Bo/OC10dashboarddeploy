@@ -2,6 +2,7 @@
 import streamlit as st
 import requests  
 
+##
 ## Ceci est une app de recommandation de contenu qui appelle une fonction Azure
 ##
 
