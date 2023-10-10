@@ -3,6 +3,9 @@ import pandas as pd
 from datetime import datetime, time
 import requests  
 
+## App proposant la connexion à une fonction azure de recommendation de contenu basé sur le contenu
+
+
 # Titre de l'application
 st.title("Système de recommandation basé sur le contenu")
 
