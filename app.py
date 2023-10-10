@@ -2,6 +2,9 @@
 import streamlit as st
 import requests  
 
+## Ceci est une app de recommandation de contenu qui appelle une fonction Azure
+
+
 # Titre de l'application
 st.title("Système de recommandation basé sur le contenu")
 
