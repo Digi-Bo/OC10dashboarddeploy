@@ -4,7 +4,7 @@ import requests
 
 ##
 ## Ceci est une app de recommandation de contenu qui appelle une fonction Azure
-##
+
 
 # Titre de l'application
 st.title("Système de recommandation basé sur le contenu")
@@ -14,7 +14,7 @@ user_id = st.number_input("Entrez l'ID de l'utilisateur :", min_value=1, max_val
 
 # Bouton pour lancer la recommandation
 if st.button("Recommander des articles"):
-    # Adresse de la fonction Azure basée sur le contenu
+    # Adresse de la fonction Azure basée sur le contenu avec le bon token
     azure_function_url = "https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code=G-0r5SMpX8yCs8aOKAd0bbGRrydUdCLYkH8M3OjkKuvNAzFuCqIoWw=="
     try:
         # Envoyer une requête GET à la fonction Azure
