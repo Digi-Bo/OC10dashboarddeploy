@@ -54,7 +54,7 @@ def load_data_from_blob_storage(container_name):
 st.title("Dasboard Projet 10 : Comparatif des modèles pour un système de recommandation")
 
 # Charger les données depuis le blob storage
-df_results = load_data_from_blob_storage(container_name="mycontainer")
+df_results = load_data_from_blob_storage(container_name="oc09dataglobo")
 
 
 
