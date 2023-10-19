@@ -109,3 +109,44 @@ if st.session_state.dashboard_view:
     )
 
     st.plotly_chart(fig)
+
+
+        # Filtrer le dataframe pour la "Stratégie 1"
+    df_strategie1 = df_results[df_results['Stratégie'] == "Stratégie 1"]
+
+    # Filtrer le dataframe filtré en fonction du type d'algorithme
+    df_implemente = df_strategie1[df_strategie1["Type d'algorithme"] == "implémenté"]
+    df_default = df_strategie1[df_strategie1["Type d'algorithme"] == "Par défaut"]
+
+    # Tri des dataframes par 'test_time' pour un affichage plus esthétique
+    df_implemente = df_implemente.sort_values(by='test_time', ascending=False)
+    df_default = df_default.sort_values(by='test_time', ascending=False)
+
+    # Créer le graphique
+    fig = go.Figure()
+
+    # Ajouter les barres pour les algorithmes "implémenté"
+    fig.add_trace(go.Bar(
+        x=df_implemente['Algorithm'],
+        y=df_implemente['test_time'],
+        name='Implémenté',
+        marker_color='indianred'
+    ))
+
+    # Ajouter les barres pour les algorithmes "Par défaut"
+    fig.add_trace(go.Bar(
+        x=df_default['Algorithm'],
+        y=df_default['test_time'],
+        name='Par défaut',
+        marker_color='lightsalmon'
+    ))
+
+    # Mettre à jour le layout
+    fig.update_layout(
+        title="Comparaison des temps de test (test_time) pour la Stratégie 1",
+        xaxis_title="Algorithmes",
+        yaxis_title="Temps de test (test_time)",
+        barmode='group'
+    )
+
+    st.plotly_chart(fig)
