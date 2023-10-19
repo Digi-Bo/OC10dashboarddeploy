@@ -9,18 +9,24 @@ import os
 
 ## Fonction pour accéder au blob storage
 
-def load_data_from_blob_storage(container_name, blob_name, file_type):
+import os
+import io
+import pandas as pd
+from azure.storage.blob import BlobServiceClient
+
+def load_data_from_blob_storage(container_name):
     """
     Charge les données à partir du stockage Blob.
 
     Args:
         container_name (str): Nom du conteneur Blob.
-        blob_name (str): Nom du blob.
-        file_type (str): Type de fichier (csv ou pickle).
 
     Returns:
-        pd.DataFrame or object: Les données chargées depuis le stockage Blob.
+        pd.DataFrame: Les données chargées depuis le stockage Blob.
     """ 
+        
+    # Nom du fichier à sélectionner
+    blob_name = "ResultatsOC10.csv"
         
     # Récupérer la chaîne de connexion au stockage Azure à partir des variables d'environnement
     connection_string = os.environ["AzureWebJobsStorage"]
@@ -36,16 +42,10 @@ def load_data_from_blob_storage(container_name, blob_name, file_type):
 
     # Télécharger le contenu du blob
     data = blob_client.download_blob()
-    
-    if file_type == 'csv':
-        # Si le type de fichier est CSV, charger les données en tant que DataFrame pandas à partir des données CSV
-        return pd.read_csv(io.BytesIO(data.readall()))
-    elif file_type == 'pickle':
-        # Si le type de fichier est pickle, charger les données en tant qu'objet à partir des données pickle
-        return pickle.loads(data.readall())
-    else:
-        # Si le type de fichier n'est pas pris en charge, lever une exception ValueError
-        raise ValueError("Unsupported file_type")
+
+    # Charger les données en tant que DataFrame pandas à partir des données CSV
+    return pd.read_csv(io.BytesIO(data.readall()))
+
 
 
 
@@ -54,7 +54,7 @@ def load_data_from_blob_storage(container_name, blob_name, file_type):
 st.title("Dasboard Projet 10 : Comparatif des modèles pour un système de recommandation")
 
 # Charger les données depuis le blob storage
-df_results = load_data_from_blob_storage(container_name="mycontainer", blob_name="ResultatsOC10.csv", file_type="csv")
+df_results = load_data_from_blob_storage(container_name="mycontainer")
 
 
 
