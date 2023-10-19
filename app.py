@@ -1,7 +1,8 @@
 
 import streamlit as st
-import requests  
-import os
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
 
 
 
@@ -10,41 +11,101 @@ import os
 
 
 # Titre de l'application
-st.title("Système de recommandation basé sur le contenu")
+st.title("Dasboard Projet 10 : Comparatif des modèles pour un système de recommandation")
 
-# Sélection de l'utilisateur
-user_id = st.number_input("Entrez l'ID de l'utilisateur :", min_value=1, max_value=1000, value=1)
+# Charger les données
+df_results = pd.read_csv('ResultatsOC10.csv')
 
-# Bouton pour lancer la recommandation
-if st.button("Recommander des articles"):
-    
-    # Récupération du token dans les secrêt
-    azure_function_token = os.environ.get("AZURE_FUNCTION_TOKEN")
 
-    # URL en ajoutant le token
-    azure_function_url = f"https://hybridrecommender.azurewebsites.net/api/content4-last-click-acp?code={azure_function_token}"
 
-    try:
-        # Envoyer une requête GET à la fonction Azure
-        response = requests.get(
-            azure_function_url,
-            params={
-                "userid": user_id
-            },
-        )
+#### DASHBOARD
 
-        # Vérifier le statut de la réponse
-        response.raise_for_status()
+if st.button("Découvrir le dashboard"):
+    st.session_state.dashboard_view = True
+else:
+    st.session_state.dashboard_view = False
 
-        # Tenter de lire la réponse comme JSON
-        top_articles = response.json()
 
-        # Afficher les résultats
-        st.header("Top articles recommandés :")
-        for article in top_articles:
-            st.write(f"ID de l'article : {article}")
+###  Si le tableau de bord est actif (st.session_state.dashboard_view == True).
+if st.session_state.dashboard_view:
 
-    except requests.exceptions.HTTPError as http_err:
-        st.error(f"Erreur HTTP s'est produite: {http_err}")
-    except Exception as err:
-        st.error(f"Une erreur s'est produite: {err}")
+    # Filtrer le dataframe pour la "strategie 2"
+    df_strategie2 = df_results[df_results['Stratégie'] == "Stratégie 1"]
+
+    # Filtrer le dataframe filtré en fonction du type d'algorithme
+    df_implemente = df_strategie2[df_strategie2["Type d'algorithme"] == "implémenté"]
+    df_default = df_strategie2[df_strategie2["Type d'algorithme"] == "Par défaut"]
+
+    # Tri des dataframes par 'test_rmse' pour un affichage plus esthétique
+    df_implemente = df_implemente.sort_values(by='test_rmse', ascending=False)
+    df_default = df_default.sort_values(by='test_rmse', ascending=False)
+
+    # Créer le graphique
+    fig = go.Figure()
+
+    # Ajouter les barres pour les algorithmes "implémenté"
+    fig.add_trace(go.Bar(
+        x=df_implemente['Algorithm'],
+        y=df_implemente['test_rmse'],
+        name='Implémenté',
+        marker_color='indianred'
+    ))
+
+    # Ajouter les barres pour les algorithmes "Par défaut"
+    fig.add_trace(go.Bar(
+        x=df_default['Algorithm'],
+        y=df_default['test_rmse'],
+        name='Par défaut',
+        marker_color='lightsalmon'
+    ))
+
+    # Mettre à jour le layout
+    fig.update_layout(
+        title="Comparaison des RMSE des algorithmes pour la stratégie 1",
+        xaxis_title="Algorithmes",
+        yaxis_title="Test RMSE",
+        barmode='group'
+    )
+
+    st.plotly_chart(fig)
+
+
+    # Filtrer le dataframe pour la "Stratégie 1"
+    df_strategie1 = df_results[df_results['Stratégie'] == "Stratégie 1"]
+
+    # Filtrer le dataframe filtré en fonction du type d'algorithme
+    df_implemente = df_strategie1[df_strategie1["Type d'algorithme"] == "implémenté"]
+    df_default = df_strategie1[df_strategie1["Type d'algorithme"] == "Par défaut"]
+
+    # Tri des dataframes par 'fit_time' pour un affichage plus esthétique
+    df_implemente = df_implemente.sort_values(by='fit_time', ascending=False)
+    df_default = df_default.sort_values(by='fit_time', ascending=False)
+
+    # Créer le graphique
+    fig = go.Figure()
+
+    # Ajouter les barres pour les algorithmes "implémenté"
+    fig.add_trace(go.Bar(
+        x=df_implemente['Algorithm'],
+        y=df_implemente['fit_time'],
+        name='Implémenté',
+        marker_color='indianred'
+    ))
+
+    # Ajouter les barres pour les algorithmes "Par défaut"
+    fig.add_trace(go.Bar(
+        x=df_default['Algorithm'],
+        y=df_default['fit_time'],
+        name='Par défaut',
+        marker_color='lightsalmon'
+    ))
+
+    # Mettre à jour le layout
+    fig.update_layout(
+        title="Comparaison des temps d'entraînement (fit_time) pour la Stratégie 1",
+        xaxis_title="Algorithmes",
+        yaxis_title="Temps d'entraînement (fit_time)",
+        barmode='group'
+    )
+
+    st.plotly_chart(fig)
