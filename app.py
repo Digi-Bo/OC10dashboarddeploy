@@ -108,6 +108,7 @@ if st.session_state.dashboard_view:
 
     st.plotly_chart(fig)
 
+######### 
 
     # Filtrer le dataframe pour la "Stratégie 1"
     df_strategie1 = df_results[df_results['Stratégie'] == "Stratégie 1"]
@@ -150,6 +151,8 @@ if st.session_state.dashboard_view:
     st.plotly_chart(fig)
 
 
+######### 
+
         # Filtrer le dataframe pour la "Stratégie 1"
     df_strategie1 = df_results[df_results['Stratégie'] == "Stratégie 1"]
 
@@ -185,6 +188,48 @@ if st.session_state.dashboard_view:
         title="Comparaison des temps de test (test_time) pour la Stratégie 1",
         xaxis_title="Algorithmes",
         yaxis_title="Temps de test (test_time)",
+        barmode='group'
+    )
+
+    st.plotly_chart(fig)
+
+
+######### 
+    # Filtrer le dataframe pour les algorithmes de "Stratégie 1" et "Stratégie 2"
+    df_filtered = df_results[df_results['Stratégie'].isin(["Stratégie 1", "Stratégie 2"])]
+
+    # Filtrer le dataframe filtré en fonction de la stratégie
+    df_strategie1 = df_filtered[df_filtered['Stratégie'] == "Stratégie 1"]
+    df_strategie2 = df_filtered[df_filtered['Stratégie'] == "Stratégie 2"]
+
+    # Tri des dataframes par 'test_rmse' pour un affichage plus esthétique
+    df_strategie1 = df_strategie1.sort_values(by='test_rmse', ascending=False)
+    df_strategie2 = df_strategie2.sort_values(by='test_rmse', ascending=False)
+
+    # Créer le graphique
+    fig = go.Figure()
+
+    # Ajouter les barres pour les algorithmes de "Stratégie 1"
+    fig.add_trace(go.Bar(
+        x=df_strategie1['Algorithm'],
+        y=df_strategie1['test_rmse'],
+        name='Stratégie 1',
+        marker_color='indianred'
+    ))
+
+    # Ajouter les barres pour les algorithmes de "Stratégie 2"
+    fig.add_trace(go.Bar(
+        x=df_strategie2['Algorithm'],
+        y=df_strategie2['test_rmse'],
+        name='Stratégie 2',
+        marker_color='lightsalmon'
+    ))
+
+    # Mettre à jour le layout
+    fig.update_layout(
+        title="Comparaison des RMSE des algorithmes pour les Stratégies 1 et 2",
+        xaxis_title="Algorithmes",
+        yaxis_title="Test RMSE",
         barmode='group'
     )
 
